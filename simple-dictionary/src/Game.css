@@ -1,0 +1,160 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: rgb(110, 60, 26);
+  }
+  
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 50px;
+    color: rgba(255, 255, 255, 0.9);
+    font-family: 'Roboto', sans-serif;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    padding: 30px;
+  }
+  
+  .title {
+    font-size: 40px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  
+  .buttons {
+    display: flex;
+    margin-bottom: 30px;
+  }
+  
+  .btn {
+    font-size: 20px;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin-right: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .btn:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .active {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .game {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .timer {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .score {
+    font-size: 20px;
+    margin-bottom: 30px;
+  }
+  
+  .question {
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .guess {
+    font-size: 20px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  
+  .submit-btn {
+    font-size: 20px;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .submit-btn:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .start-btn {
+    font-size: 20px;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .start-btn:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .message {
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+  }
+  
+  .message.correct {
+    background-color: #4caf50;
+  }
+  
+  .message.incorrect {
+    background-color: #f44336;
+  }
+  .win {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  
+  .lose {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  
+  .initials {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+  }
+  
+  .submit-initials {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    background-color: #eee;
+    color: #333;
+    cursor: pointer;
+    margin-bottom: 1rem;
+  }
