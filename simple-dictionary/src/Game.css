@@ -1,33 +1,54 @@
 body {
   background-color: #3795BD;
   font-family: Arial, sans-serif;
+  padding: 20px;
+  
 }
 
 .container {
   max-width: 600px;
-  margin: 0 auto;
-  background-color: #FFFFFF;
+  margin: 10px;
+  background-color: #3A1078;
   border-radius: 16px;
-  padding: 32px;
+  border: 2px solid #000000;
+  padding: 20px;
+  padding-bottom: 30px;
+  position: relative;
+
 }
+
 
 h1 {
   font-size: 48px;
   font-weight: bold;
-  color: #3A1078;
+  color: #3795BD;
   text-align: center;
   margin-top: 32px;
   margin-bottom: 32px;
+  text-shadow: 3px 3px #000;
+}
+
+h3 {
+  font-size: 22px;
+  line-height: 30px;
+  font-weight: bold;
+  color: #a880ff;
+  text-align: center;
+  margin-top: 32px;
+  margin-bottom: 32px;
+  text-shadow: 3px 3px #000;
 }
 
 h2 {
   font-size: 36px;
   font-weight: bold;
-  color: #4E31AA;
+  color: #a880ff;
   text-align: center;
   margin-top: 30px;
   margin-bottom: 16px;
+  text-shadow: 2px 2px #000;
 }
+
 
 button {
   display: flex;
@@ -95,13 +116,20 @@ button[type="submit"]:hover {
 }
 
 .my-alert {
-  background-color: #fff;
+  background-color: #3795BD;
   color: #000;
   border: 1px solid #000;
   padding: 10px;
   border-radius: 5px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  margin-top: 15px;
+  width: fit-content;
+  align-items: center;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
 }
+
 
 
 p {
@@ -118,4 +146,34 @@ p {
   margin-right: 10px;
   display: inline-block;
   width: 400px;
+}
+
+.high-scores {
+  max-width: 600px;
+  margin: 10px;
+  background-color: #3A1078;
+  border-radius: 16px;
+  border: 2px solid #000000;
+  padding: 20px;
+  padding-bottom: 30px;
+  position: relative;
+}
+
+
+h5 { 
+  font-size: 22px;
+  line-height: 30px;
+  font-weight: bold;
+  color: #a880ff;
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  text-shadow: 3px 3px #000;
+}
+
+.high-scores p {
+  width:auto;
+  margin: 5px 10px;
+  font-size: 18px;
+  color: #000 ;
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import dictionary from './dictionary';
 import './Game.css';
 
@@ -8,37 +8,46 @@ const Game = () => {
   const [nameAnswer, setNameAnswer] = useState('');
   const [companyAnswer, setCompanyAnswer] = useState('');
   const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(30);
+  const [timeLeft, setTimeLeft] = useState(60);
   const [gameStarted, setGameStarted] = useState(false);
+  const [highScores, setHighScores] = useState({ name: null, company: null, both: null });
 
-  const myAlert = (message) => {
+  
+
+  const myAlert = useCallback((message) => {
     const alertBox = document.createElement("div");
     alertBox.className = "my-alert";
     const alertText = document.createTextNode(message);
     alertBox.appendChild(alertText);
-    document.body.appendChild(alertBox);
+    const container = document.querySelector('.container');
+    container.appendChild(alertBox);
     setTimeout(() => {
       alertBox.remove();
     }, 3000);
-  };
+  }, []);
+  
   
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setTimeLeft((prevTime) => prevTime - 1);
-    }, 1000);
+    let intervalId;
+    if (gameStarted) {
+      intervalId = setInterval(() => {
+        setTimeLeft((prevTime) => prevTime - 1);
+      }, 1000);
+    }
 
     return () => clearInterval(intervalId);
-  }, []);
+  }, [gameStarted]);
 
 
   const startGame = () => {
+    setGameStarted(true);
+    
     if (!gameMode) {
       myAlert('Please select a game mode!');
       return;
     }
 
-    setGameStarted(true);
 
     const tickers = Object.keys(dictionary);
     const randomIndex = Math.floor(Math.random() * tickers.length);
@@ -136,22 +145,42 @@ const Game = () => {
       setGameStarted(false);
       myAlert(`Congratulations, your score was: ${score}`);
       setScore(0);
-      setTimeLeft(30);
+      setTimeLeft(60);
       setTicker('');
       setNameAnswer('');
       setCompanyAnswer('');
+      if (score > highScores[gameMode]) {
+        const initials = window.prompt('Congratulations! You got a new high score! Enter your Name:');
+        setHighScores((prevHighScores) => ({
+          ...prevHighScores,
+          [gameMode]: { initials, score }
+        }));
+        localStorage.setItem('highScores', JSON.stringify(highScores));
+      }
     };
   
-    if (timeLeft === 0) {
+    if (timeLeft === 0 && ticker !== '') {
       endGame();
     }
-  }, [timeLeft, score, setGameStarted, setTimeLeft, setTicker, setNameAnswer, setCompanyAnswer]);
+  }, [timeLeft, score, myAlert, setGameStarted, setTimeLeft, setTicker, setNameAnswer, setCompanyAnswer, ticker, gameMode, highScores]);
+
+  const HighScores = () => {
+    return (
+      <div className="high-scores">
+        <h5>High Scores:</h5>
+        <p>Name-Mode: {highScores.name ? `${highScores.name.initials}: ${highScores.name.score}` : '-'}</p>
+        <p>Company-Mode: {highScores.company ? `${highScores.company.initials}: ${highScores.company.score}` : '-'}</p>
+        <p>Both-Mode: {highScores.both ? `${highScores.both.initials}: ${highScores.both.score}` : '-'}</p>
+      </div>
+    );
+  };
   
 
   const renderGameModeSelect = () => {
     return (
-      <>
-        <h1>Guess the Coin</h1>
+      <div className="container">
+        <h1>Guess the Coin!</h1>
+        <h3>We'll show you the Coin's Ticker, and you tell us the name and/or company!</h3>
         <div className="mode-buttons">
           <button
             className={gameMode === 'name' ? 'selected' : ''}
@@ -174,15 +203,16 @@ const Game = () => {
         </div>
         <br />
         <button onClick={startGame}>Start</button>
-      </>
+      </div>
     );
   };
   
 
   const renderGame = () => {
     return (
-      <>
-        <h1>Guess the Coin</h1>
+      <div className="container">
+        <h1>Guess the Coin!</h1>
+
         {gameMode === 'name' ? (
           <>
             <h2>{dictionary[ticker].symbol}</h2>
@@ -209,13 +239,23 @@ const Game = () => {
             </form>
           </>
         ) : null}
-        <p>Score: {score}</p>
-        <p>Time Left: {timeLeft}</p>
-      </>
-    );
-  };
+        {gameStarted ? (
+        <div>
+          <p>Score: {score}</p>
+          <p>Time Left: {timeLeft}</p>
+        </div>
+      ) : null}
+    </div>
+  );
+};
 
-return gameStarted ? renderGame() : renderGameModeSelect();
+return (
+  <div>
+    {gameStarted ? renderGame() : renderGameModeSelect()}
+
+    <HighScores />
+  </div>
+);
 };
 
 export default Game;
