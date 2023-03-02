@@ -12,10 +12,17 @@ const Game = () => {
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(60);
   const [gameStarted, setGameStarted] = useState(false);
-  const [highScores, setHighScores] = useState({ name: null, company: null, both: null });
+  const [highScores, setHighScores] = useState({
+    name: { initials: '', score: 0 },
+    company: { initials: '', score: 0 },
+    both: { initials: '', score: 0 },
+    nameHardMode: { initials: '', score: 0 },
+    companyHardMode: { initials: '', score: 0 },
+    bothHardMode: { initials: '', score: 0 },
+  });
   const [hardMode, setHardMode] = useState(false);
 
-  
+  const dictionaryToUse = hardMode ? dictionary2 : dictionary;
 
   const myAlert = useCallback((message) => {
     const alertBox = document.createElement("div");
@@ -31,7 +38,7 @@ const Game = () => {
     }
     setTimeout(() => {
       alertBox.remove();
-    }, 4000);
+    }, 5000);
   }, []);
   
   
@@ -58,7 +65,6 @@ const Game = () => {
     }
 
 
-    const dictionaryToUse = hardMode ? dictionary2 : dictionary;
     const tickers = Object.keys(dictionaryToUse);
     const randomIndex = Math.floor(Math.random() * tickers.length);
     const randomTicker = tickers[randomIndex];
@@ -116,9 +122,26 @@ const Game = () => {
     setTicker(randomTicker);
   };
   
+  useEffect(() => {
+    const storedHighScores = JSON.parse(localStorage.getItem('highScores'));
+    if (storedHighScores) {
+      setHighScores(storedHighScores);
+    }
+  }, []);
 
+  useEffect(() => {
+    localStorage.setItem('highScores', JSON.stringify(highScores));
+  }, [highScores]);
 
-
+  const updateHighScore = useCallback(() => {
+    if (score > highScores[gameMode].score) {
+      const initials = window.prompt('Congratulations! You got a new high score! Enter your Name:');
+      setHighScores((prevHighScores) => ({
+        ...prevHighScores,
+        [gameMode]: { initials, score },
+      }));
+    }
+  }, [score, gameMode, highScores]);
 
   useEffect(() => {
     const endGame = () => {
@@ -129,39 +152,35 @@ const Game = () => {
       setTicker('');
       setNameAnswer('');
       setCompanyAnswer('');
-      if (score > highScores[gameMode]) {
-        const initials = window.prompt('Congratulations! You got a new high score! Enter your Name:');
-        setHighScores((prevHighScores) => ({
-          ...prevHighScores,
-          [gameMode]: { initials, score }
-        }));
-        localStorage.setItem('highScores', JSON.stringify(highScores));
-      }
+      updateHighScore();
     };
   
     if (timeLeft === 0 && ticker !== '') {
       endGame();
     }
-  }, [timeLeft, score, myAlert, setGameStarted, setTimeLeft, setTicker, setNameAnswer, setCompanyAnswer, ticker, gameMode, highScores]);
+  }, [timeLeft, score, myAlert, setGameStarted, setTimeLeft, setTicker, setNameAnswer, setCompanyAnswer, ticker, gameMode, updateHighScore]);
 
   const HighScores = () => {
     return (
       <div className="high-scores">
         <h5>High Scores:</h5>
-        <p>Name-Mode: {highScores.name ? `${highScores.name.initials}: ${highScores.name.score}` : '-'}</p>
-        <p>Company-Mode: {highScores.company ? `${highScores.company.initials}: ${highScores.company.score}` : '-'}</p>
-        <p>Both-Mode: {highScores.both ? `${highScores.both.initials}: ${highScores.both.score}` : '-'}</p>
+        {highScores.name && highScores.name.score > 0 && <p>Mode=Name: {`${highScores.name.initials} with a score of ${highScores.name.score}`}</p>}
+        {highScores.company && highScores.company.score > 0 && <p>Mode=Company: {`${highScores.company.initials} with a score of ${highScores.company.score}`}</p>}
+        {highScores.both && highScores.both.score > 0 && <p>Mode=Both: {`${highScores.both.initials} with a score of ${highScores.both.score}`}</p>}
+        {highScores.nameHardMode && highScores.nameHardMode.score > 0 && <p>Mode=Name (Hard): {`${highScores.nameHardMode.initials} with a score of ${highScores.nameHardMode.score}`}</p>}
+        {highScores.companyHardMode && highScores.companyHardMode.score > 0 && <p>Mode=Company (Hard): {`${highScores.companyHardMode.initials} with a score of ${highScores.companyHardMode.score}`}</p>}
+        {highScores.bothHardMode && highScores.bothHardMode.score > 0 && <p>Mode=Both (Hard): {`${highScores.bothHardMode.initials} with a score of ${highScores.bothHardMode.score}`}</p>}
       </div>
     );
   };
   
+  
 
   const renderGameModeSelect = () => {
-
     const handleHardModeChange = (e) => {
       setHardMode(e.target.checked);
     };
-
+  
     return (
       <div className="container">
         <h1>Guess the Ticker!</h1>
@@ -186,23 +205,43 @@ const Game = () => {
           >
             Both
           </button>
+          {hardMode && (
+            <>
+              <button
+                className={gameMode === 'nameHardMode' ? 'selected' : ''}
+                onClick={() => setGameMode('nameHardMode')}
+              >
+                Name (Hard)
+              </button>
+              <button
+                className={gameMode === 'companyHardMode' ? 'selected' : ''}
+                onClick={() => setGameMode('companyHardMode')}
+              >
+                Company (Hard)
+              </button>
+              <button
+                className={gameMode === 'bothHardMode' ? 'selected' : ''}
+                onClick={() => setGameMode('bothHardMode')}
+              >
+                Both (Hard)
+              </button>
+            </>
+          )}
         </div>
         <div className="hard-mode">
-        <input
-          type="checkbox"
-          id="hardMode"
-          checked={hardMode}
-          onChange={handleHardModeChange}
-        />
-        <label htmlFor="hardMode">Hard Mode</label>
-      </div>
+          <input
+            type="checkbox"
+            id="hardMode"
+            checked={hardMode}
+            onChange={handleHardModeChange}
+          />
+          <label htmlFor="hardMode">Too Easy?</label>
+        </div>
         <br />
-        <button onClick={startGame}>Start</button>
+        <button className="start-button" onClick={startGame}>Start</button>
       </div>
     );
   };
-  
-  const dictionaryToUse = hardMode ? dictionary2 : dictionary;
 
     
     const renderGame = () => {
@@ -219,45 +258,85 @@ const Game = () => {
         <h1>Guess the Ticker!</h1>
   
         {gameMode === 'name' ? (
-          <>
-            <h6>Game Mode: Name</h6>
-            <h2>{dictionaryEntry.name}</h2>
-            <form onSubmit={handleNameAnswerSubmit}>
-              <input type="text" placeholder="answer..." value={nameAnswer} onChange={handleNameAnswerChange} />
-              <button type="submit">Submit</button>
-            </form>
-          </>
-        ) : gameMode === 'company' ? (
-          <>
-            <h6>Game Mode: Company</h6>
-            <h2>{dictionaryEntry.company}</h2>
-            <form onSubmit={handleCompanyAnswerSubmit}>
-              <input type="text" placeholder="answer..." value={companyAnswer} onChange={handleCompanyAnswerChange} />
-              <button type="submit">Submit</button>
-            </form>
-          </>
-        ) : gameMode === 'both' ? (
-          <>
-            <h6>Game Mode: Both</h6>
-            {name.toLowerCase() === company.toLowerCase() ? (
-              <div>
-                <h2>Name&Company:</h2>
-                <h6>{name}</h6>
-              </div>
-            ) : (
-              <>
-                <div>
-                  <h2>Name/Company:</h2>
-                  <h6>{name} / {company}</h6>
-                </div>
-              </>
-            )}
-            <form onSubmit={handleNameAnswerSubmit}>
-              <input type="text" placeholder="answer..." value={nameAnswer} onChange={handleNameAnswerChange} />
-              <button type="submit">Submit</button>
-            </form>
-          </>
-        ) : null}
+  <>
+    <h6>Game Mode: Name</h6>
+    <h2>{dictionaryEntry.name}</h2>
+    <form onSubmit={handleNameAnswerSubmit}>
+      <input type="text" placeholder="answer..." value={nameAnswer} onChange={handleNameAnswerChange} />
+      <button type="submit">Submit</button>
+    </form>
+  </>
+) : gameMode === 'company' ? (
+  <>
+    <h6>Game Mode: Company</h6>
+    <h2>{dictionaryEntry.company}</h2>
+    <form onSubmit={handleCompanyAnswerSubmit}>
+      <input type="text" placeholder="answer..." value={companyAnswer} onChange={handleCompanyAnswerChange} />
+      <button type="submit">Submit</button>
+    </form>
+  </>
+) : gameMode === 'both' ? (
+  <>
+    <h6>Game Mode: Both</h6>
+    {name.toLowerCase() === company.toLowerCase() ? (
+      <div>
+        <h2>Name&Company:</h2>
+        <h6>{name}</h6>
+      </div>
+    ) : (
+      <>
+        <div>
+          <h2>Name/Company:</h2>
+          <h6>{name} / {company}</h6>
+        </div>
+      </>
+    )}
+    <form onSubmit={handleNameAnswerSubmit}>
+      <input type="text" placeholder="answer..." value={nameAnswer} onChange={handleNameAnswerChange} />
+      <button type="submit">Submit</button>
+    </form>
+  </>
+) : hardMode && gameMode === 'nameHardMode' ? (
+  <>
+    <h6>Game Mode: Name (Hard)</h6>
+    <h2>{dictionary2[ticker].name}</h2>
+    <form onSubmit={handleNameAnswerSubmit}>
+      <input type="text" placeholder="answer..." value={nameAnswer} onChange={handleNameAnswerChange} />
+      <button type="submit">Submit</button>
+    </form>
+  </>
+) : hardMode && gameMode === 'companyHardMode' ? (
+  <>
+    <h6>Game Mode: Company (Hard)</h6>
+    <h2>{dictionary2[ticker].company}</h2>
+    <form onSubmit={handleCompanyAnswerSubmit}>
+      <input type="text" placeholder="answer..." value={companyAnswer} onChange={handleCompanyAnswerChange} />
+      <button type="submit">Submit</button>
+    </form>
+  </>
+) : hardMode && gameMode === 'bothHardMode' ? (
+  <>
+    <h6>Game Mode: Both (Hard)</h6>
+    {dictionary2[ticker].name.toLowerCase() === dictionary2[ticker].company.toLowerCase() ? (
+      <div>
+        <h2>Name&Company:</h2>
+        <h6>{dictionary2[ticker].name}</h6>
+      </div>
+    ) : (
+      <>
+        <div>
+          <h2>Name/Company:</h2>
+          <h6>{dictionary2[ticker].name} / {dictionary2[ticker].company}</h6>
+        </div>
+      </>
+    )}
+    <form onSubmit={handleNameAnswerSubmit}>
+      <input type="text" placeholder="answer..." value={nameAnswer} onChange={handleNameAnswerChange} />
+      <button type="submit">Submit</button>
+    </form>
+  </>
+) : null}
+
         {gameStarted ? (
           <div>
             <p>Score: {score}</p>

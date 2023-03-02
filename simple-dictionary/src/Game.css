@@ -26,8 +26,8 @@ h1 {
   font-weight: bold;
   color: #00b3ff;
   text-align: center;
-  margin-top: 32px;
-  margin-bottom: 16px;
+  margin-top: 20px;
+  margin-bottom: 10px;
   text-shadow: 3px 3px #000;
 }
 
@@ -37,7 +37,7 @@ h3 {
   font-weight: bold;
   color: #a880ff;
   text-align: center;
-  margin-top: 32px;
+  margin-top: 24px;
   margin-bottom: 20px;
   text-shadow: 3px 3px #000;
 }
@@ -65,20 +65,21 @@ button {
   border-radius: 8px;
   padding: 16px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 1s, box-shadow 1s;
   box-shadow: 0px 4px 0px #27497f;
-}
-
-button.selected {
-  background-color: #FF0000;
-  transition: background-color 0.5s;
-  box-shadow: 0px 4px 0px #970202;
 }
 
 button:hover {
   background-color: #3795BD;
   box-shadow: 0px 4px 0px #2b6992;
 }
+
+button.selected {
+  background-color: #ff0000b8;
+  transition: background-color 0.4s, box-shadow 0.4s;
+  box-shadow: 0px 4px 0px #970202;
+}
+
 
 form {
   display: flex;
@@ -119,6 +120,28 @@ button[type="submit"]:hover {
   background-color: #55BDDD;
 }
 
+.start-button {
+  font-size: 24px;
+  font-weight: bold;
+  color: #FFFFFF;
+  background-color: #4E31AA;
+  border: none;
+  border-radius: 8px;
+  padding: 16px;
+  cursor: pointer;
+  transition: background-color 2s, box-shadow 2s, color 4s; /* add transition to box-shadow */
+  box-shadow: 0px 4px 0px #0000070d;
+}
+
+.start-button:hover {
+  background-color: #32ba56c4;
+  box-shadow: 0px 4px 0px #00000057;
+  color: #000;
+  
+}
+
+
+
 .my-alert {
   background-color: #3795BD;
   color: #000;
@@ -127,6 +150,8 @@ button[type="submit"]:hover {
   border-radius: 5px;
   margin-bottom: 15px;
   margin-top: 15px;
+  font-weight: 600;
+  font-size: 20px;
   width: fit-content;
   align-items: center;
   text-align: center;
@@ -135,9 +160,8 @@ button[type="submit"]:hover {
 }
 
 
-
 p {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: bold;
   color: #FFFFFF;
   background-color: #2F58CD;
@@ -197,14 +221,16 @@ h6 {
 .hard-mode {
   display: inline-block;
   position: absolute;
-  bottom: 35px;
+  bottom: 50px;
   left: 35px;
-  font-weight: 00;
+  font-weight: 500;
   margin: 0px 0;
   padding: 5px 5px;
   background-color: #2F58CD;
   border-radius: 5px;
+  font-family: 'Roboto', sans-serif;
 }
+
  
 
 .hard-mode input[type="checkbox"] {
