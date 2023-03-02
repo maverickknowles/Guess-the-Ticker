@@ -22,7 +22,8 @@ const Game = () => {
   });
   const [hardMode, setHardMode] = useState(false);
 
-  const dictionaryToUse = hardMode ? dictionary2 : dictionary;
+  const dictionaryToUse = (gameMode === 'name' || gameMode === 'company' || gameMode === 'both') ? dictionary : (hardMode ? dictionary2 : dictionary);
+
 
   const myAlert = useCallback((message) => {
     const alertBox = document.createElement("div");
