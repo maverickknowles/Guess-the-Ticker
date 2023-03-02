@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import dictionary from './dictionary';
+import dictionary2 from './dictionary2';
+
 import './Game.css';
 
 const Game = () => {
@@ -11,6 +13,7 @@ const Game = () => {
   const [timeLeft, setTimeLeft] = useState(60);
   const [gameStarted, setGameStarted] = useState(false);
   const [highScores, setHighScores] = useState({ name: null, company: null, both: null });
+  const [hardMode, setHardMode] = useState(false);
 
   
 
@@ -20,11 +23,17 @@ const Game = () => {
     const alertText = document.createTextNode(message);
     alertBox.appendChild(alertText);
     const container = document.querySelector('.container');
-    container.appendChild(alertBox);
+    const existingAlerts = container.querySelectorAll('.my-alert');
+    if (existingAlerts.length > 0) {
+      container.insertBefore(alertBox, existingAlerts[0]);
+    } else {
+      container.appendChild(alertBox);
+    }
     setTimeout(() => {
       alertBox.remove();
-    }, 3000);
+    }, 4000);
   }, []);
+  
   
   
 
@@ -49,7 +58,8 @@ const Game = () => {
     }
 
 
-    const tickers = Object.keys(dictionary);
+    const dictionaryToUse = hardMode ? dictionary2 : dictionary;
+    const tickers = Object.keys(dictionaryToUse);
     const randomIndex = Math.floor(Math.random() * tickers.length);
     const randomTicker = tickers[randomIndex];
 
@@ -66,78 +76,48 @@ const Game = () => {
 
   const handleNameAnswerSubmit = (e) => {
     e.preventDefault();
-
-    const correctName = dictionary[ticker].name;
-
-    if (nameAnswer.toLowerCase() === correctName.toLowerCase()) {
+  
+    const { symbol, name } = dictionaryToUse[ticker];
+  
+    if (nameAnswer.toLowerCase() === symbol.toLowerCase()) {
       setScore((prevScore) => prevScore + 1);
-      myAlert('Correct!');
+      myAlert(`Correct!`);
     } else {
-      myAlert(`Incorrect, the correct answer is "${correctName}".`);
+      myAlert(`Incorrect. The ticker for ${name} is ${symbol}.`);
     }
-
+  
     setNameAnswer('');
-
-    const tickers = Object.keys(dictionary);
+  
+    const tickers = Object.keys(dictionaryToUse);
     const randomIndex = Math.floor(Math.random() * tickers.length);
     const randomTicker = tickers[randomIndex];
-
+  
     setTicker(randomTicker);
   };
-
+  
   const handleCompanyAnswerSubmit = (e) => {
     e.preventDefault();
-
-    const { name, company } = dictionary[ticker];
-
-    if (
-      companyAnswer.toLowerCase() === company.toLowerCase()
-    ) {
-      setScore((prevScore) => prevScore + 1);
-      myAlert('Correct!');
-    } else {
-      myAlert(`Incorrect, this is "${name}", and the company is "${company}"`);
-    }
-
-    setNameAnswer('');
-    setCompanyAnswer('');
-
-    const tickers = Object.keys(dictionary);
-    const randomIndex = Math.floor(Math.random() * tickers.length);
-    const randomTicker = tickers[randomIndex];
-
-    setTicker(randomTicker);
-  };
-
-  const handleBothAnswerSubmit = (e) => {
-    e.preventDefault();
   
-    const { name, company } = dictionary[ticker];
+    const { symbol, company } = dictionaryToUse[ticker];
   
-    if (nameAnswer.toLowerCase() === name.toLowerCase() && companyAnswer.toLowerCase() === company.toLowerCase()) {
+    if (companyAnswer.toLowerCase() === symbol.toLowerCase()) {
       setScore((prevScore) => prevScore + 1);
-      myAlert('Correct!');
-    } else if (name.toLowerCase() === company.toLowerCase()) {
-      if (nameAnswer.toLowerCase() === name.toLowerCase() || companyAnswer.toLowerCase() === company.toLowerCase()) {
-        setScore((prevScore) => prevScore + 1);
-        myAlert('Correct!');
-      } else {
-        myAlert(`Incorrect, this is "${name}", and the company is "${company}"`);
-      }
+      myAlert(`Correct!`);
     } else {
-      myAlert(`Incorrect, this is "${name}", and the company is "${company}"`);
+      myAlert(`Incorrect. The ticker for ${company} is ${symbol}.`);
     }
   
-    setNameAnswer('');
     setCompanyAnswer('');
   
-    const tickers = Object.keys(dictionary);
+    const tickers = Object.keys(dictionaryToUse);
     const randomIndex = Math.floor(Math.random() * tickers.length);
     const randomTicker = tickers[randomIndex];
   
     setTicker(randomTicker);
   };
   
+
+
 
 
   useEffect(() => {
@@ -177,10 +157,16 @@ const Game = () => {
   
 
   const renderGameModeSelect = () => {
+
+    const handleHardModeChange = (e) => {
+      setHardMode(e.target.checked);
+    };
+
     return (
       <div className="container">
-        <h1>Guess the Coin!</h1>
-        <h3>We'll show you the Coin's Ticker, and you tell us the name and/or company!</h3>
+        <h1>Guess the Ticker!</h1>
+        <h3>We'll show you the Coin's company, and/or name and you tell us the Ticker!</h3>
+        <h5>Select a mode Below!</h5>
         <div className="mode-buttons">
           <button
             className={gameMode === 'name' ? 'selected' : ''}
@@ -201,53 +187,88 @@ const Game = () => {
             Both
           </button>
         </div>
+        <div className="hard-mode">
+        <input
+          type="checkbox"
+          id="hardMode"
+          checked={hardMode}
+          onChange={handleHardModeChange}
+        />
+        <label htmlFor="hardMode">Hard Mode</label>
+      </div>
         <br />
         <button onClick={startGame}>Start</button>
       </div>
     );
   };
   
+  const dictionaryToUse = hardMode ? dictionary2 : dictionary;
 
-  const renderGame = () => {
+    
+    const renderGame = () => {
+      if (!gameMode) {
+        return <div>Please reload the page and select a game mode!</div>;
+      }
+    
+      const dictionaryEntry = dictionaryToUse[ticker];
+    
+      const { name, company } = dictionaryEntry;
+    
     return (
       <div className="container">
-        <h1>Guess the Coin!</h1>
-
+        <h1>Guess the Ticker!</h1>
+  
         {gameMode === 'name' ? (
           <>
-            <h2>{dictionary[ticker].symbol}</h2>
+            <h6>Game Mode: Name</h6>
+            <h2>{dictionaryEntry.name}</h2>
             <form onSubmit={handleNameAnswerSubmit}>
-              <input type="text" placeholder="Name" value={nameAnswer} onChange={handleNameAnswerChange} />
+              <input type="text" placeholder="answer..." value={nameAnswer} onChange={handleNameAnswerChange} />
               <button type="submit">Submit</button>
             </form>
           </>
         ) : gameMode === 'company' ? (
           <>
-            <h2>{dictionary[ticker].symbol}</h2>
+            <h6>Game Mode: Company</h6>
+            <h2>{dictionaryEntry.company}</h2>
             <form onSubmit={handleCompanyAnswerSubmit}>
-              <input type="text" placeholder="Company" value={companyAnswer} onChange={handleCompanyAnswerChange} />
+              <input type="text" placeholder="answer..." value={companyAnswer} onChange={handleCompanyAnswerChange} />
               <button type="submit">Submit</button>
             </form>
           </>
         ) : gameMode === 'both' ? (
           <>
-            <h2>{dictionary[ticker].symbol}</h2>
-            <form onSubmit={handleBothAnswerSubmit}>
-              <input type="text" placeholder="Name" value={nameAnswer} onChange={handleNameAnswerChange} />
-              <input type="text" placeholder="Company" value={companyAnswer} onChange={handleCompanyAnswerChange} />
+            <h6>Game Mode: Both</h6>
+            {name.toLowerCase() === company.toLowerCase() ? (
+              <div>
+                <h2>Name&Company:</h2>
+                <h6>{name}</h6>
+              </div>
+            ) : (
+              <>
+                <div>
+                  <h2>Name/Company:</h2>
+                  <h6>{name} / {company}</h6>
+                </div>
+              </>
+            )}
+            <form onSubmit={handleNameAnswerSubmit}>
+              <input type="text" placeholder="answer..." value={nameAnswer} onChange={handleNameAnswerChange} />
               <button type="submit">Submit</button>
             </form>
           </>
         ) : null}
         {gameStarted ? (
-        <div>
-          <p>Score: {score}</p>
-          <p>Time Left: {timeLeft}</p>
-        </div>
-      ) : null}
-    </div>
-  );
-};
+          <div>
+            <p>Score: {score}</p>
+            <p>Time Left: {timeLeft}</p>
+          </div>
+        ) : null}
+      </div>
+    );
+  };
+  
+  
 
 return (
   <div>
