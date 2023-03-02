@@ -21,27 +21,24 @@ const Game = () => {
     bothHardMode: { initials: '', score: 0 },
   });
   const [hardMode, setHardMode] = useState(false);
+  const [alerts, setAlerts] = useState([]);
+
+  
 
   const dictionaryToUse = (gameMode === 'name' || gameMode === 'company' || gameMode === 'both') ? dictionary : (hardMode ? dictionary2 : dictionary);
 
 
   const myAlert = useCallback((message) => {
-    const alertBox = document.createElement("div");
-    alertBox.className = "my-alert";
-    const alertText = document.createTextNode(message);
-    alertBox.appendChild(alertText);
-    const container = document.querySelector('.container');
-    const existingAlerts = container.querySelectorAll('.my-alert');
-    if (existingAlerts.length > 0) {
-      container.insertBefore(alertBox, existingAlerts[0]);
-    } else {
-      container.appendChild(alertBox);
-    }
-    setTimeout(() => {
-      alertBox.remove();
-    }, 5000);
+    setAlerts((existingAlerts) => {
+      // add new alert to the beginning of the array
+      const newAlerts = [message, ...existingAlerts];
+      setTimeout(() => {
+        // remove the alert after 5 seconds
+        setAlerts((updatedAlerts) => updatedAlerts.filter((alert) => alert !== message));
+      }, 5000);
+      return newAlerts;
+    });
   }, []);
-  
   
   
 
@@ -60,11 +57,7 @@ const Game = () => {
   const startGame = () => {
     setGameStarted(true);
     
-    if (!gameMode) {
-      myAlert('Please select a game mode!');
-      return;
-    }
-
+  
 
     const tickers = Object.keys(dictionaryToUse);
     const randomIndex = Math.floor(Math.random() * tickers.length);
@@ -147,7 +140,7 @@ const Game = () => {
   useEffect(() => {
     const endGame = () => {
       setGameStarted(false);
-      myAlert(`Congratulations, your score was: ${score}`);
+      myAlert(`Congratulations, your score was: ${score} points!`);
       setScore(0);
       setTimeLeft(60);
       setTicker('');
@@ -165,12 +158,12 @@ const Game = () => {
     return (
       <div className="high-scores">
         <h5>High Scores:</h5>
-        {highScores.name && highScores.name.score > 0 && <p>Mode=Name: {`${highScores.name.initials} with a score of ${highScores.name.score}`}</p>}
-        {highScores.company && highScores.company.score > 0 && <p>Mode=Company: {`${highScores.company.initials} with a score of ${highScores.company.score}`}</p>}
-        {highScores.both && highScores.both.score > 0 && <p>Mode=Both: {`${highScores.both.initials} with a score of ${highScores.both.score}`}</p>}
-        {highScores.nameHardMode && highScores.nameHardMode.score > 0 && <p>Mode=Name (Hard): {`${highScores.nameHardMode.initials} with a score of ${highScores.nameHardMode.score}`}</p>}
-        {highScores.companyHardMode && highScores.companyHardMode.score > 0 && <p>Mode=Company (Hard): {`${highScores.companyHardMode.initials} with a score of ${highScores.companyHardMode.score}`}</p>}
-        {highScores.bothHardMode && highScores.bothHardMode.score > 0 && <p>Mode=Both (Hard): {`${highScores.bothHardMode.initials} with a score of ${highScores.bothHardMode.score}`}</p>}
+        {highScores.name && highScores.name.score > 0 && <p>Name — {`${highScores.name.initials} — Score: ${highScores.name.score} `}</p>}
+        {highScores.nameHardMode && highScores.nameHardMode.score > 0 && <p>Name (Hard) — {`${highScores.nameHardMode.initials} — Score: ${highScores.nameHardMode.score}`}</p>}
+        {highScores.company && highScores.company.score > 0 && <p>Company — {`${highScores.company.initials} — Score: ${highScores.company.score}`}</p>}
+        {highScores.companyHardMode && highScores.companyHardMode.score > 0 && <p>Company (Hard) — {`${highScores.companyHardMode.initials} — Score: ${highScores.companyHardMode.score} Points!`}</p>}
+        {highScores.both && highScores.both.score > 0 && <p>Both — {`${highScores.both.initials} — Score: ${highScores.both.score}`}</p>}
+        {highScores.bothHardMode && highScores.bothHardMode.score > 0 && <p>Both (Hard) — {`${highScores.bothHardMode.initials} — Score: ${highScores.bothHardMode.score}`}</p>}
       </div>
     );
   };
@@ -185,8 +178,8 @@ const Game = () => {
     return (
       <div className="container">
         <h1>Guess the Ticker!</h1>
-        <h3>We'll show you the Coin's company, and/or name and you tell us the Ticker!</h3>
-        <h5>Select a mode Below!</h5>
+        <h3>We'll give you the name and/or the company of the coin. Can you guess its Ticker symbol?</h3>
+        <h4>Select a GameMode Below!</h4>
         <div className="mode-buttons">
           <button
             className={gameMode === 'name' ? 'selected' : ''}
@@ -247,7 +240,7 @@ const Game = () => {
     
     const renderGame = () => {
       if (!gameMode) {
-        return <div>Please reload the page and select a game mode!</div>;
+        return <h6>Please reload the page and select a game mode!</h6>;
       }
     
       const dictionaryEntry = dictionaryToUse[ticker];
@@ -340,10 +333,16 @@ const Game = () => {
 
         {gameStarted ? (
           <div>
-            <p>Score: {score}</p>
+            <p>Points: {score}</p>
             <p>Time Left: {timeLeft}</p>
           </div>
         ) : null}
+
+        {alerts.map((message, index) => (
+      <div className="my-alert" key={index}>
+        {message}
+      </div>
+    ))}
       </div>
     );
   };
