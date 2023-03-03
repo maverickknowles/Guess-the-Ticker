@@ -57,7 +57,7 @@ const Game = () => {
   const startGame = () => {
     setGameStarted(true);
     
-  
+
 
     const tickers = Object.keys(dictionaryToUse);
     const randomIndex = Math.floor(Math.random() * tickers.length);
@@ -170,77 +170,81 @@ const Game = () => {
   
   
 
-  const renderGameModeSelect = () => {
-    const handleHardModeChange = (e) => {
-      setHardMode(e.target.checked);
-    };
-  
-    return (
-      <div className="container">
-        <h1>Guess the Ticker!</h1>
-        <h3>We'll give you the name and/or the company of the coin. Can you guess its Ticker symbol?</h3>
-        <h4>Select a GameMode Below!</h4>
-        <div className="mode-buttons">
-          <button
-            className={gameMode === 'name' ? 'selected' : ''}
-            onClick={() => setGameMode('name')}
-          >
-            Name
-          </button>
-          <button
-            className={gameMode === 'company' ? 'selected' : ''}
-            onClick={() => setGameMode('company')}
-          >
-            Company
-          </button>
-          <button
-            className={gameMode === 'both' ? 'selected' : ''}
-            onClick={() => setGameMode('both')}
-          >
-            Both
-          </button>
-          {hardMode && (
-            <>
-              <button
-                className={gameMode === 'nameHardMode' ? 'selected' : ''}
-                onClick={() => setGameMode('nameHardMode')}
-              >
-                Name (Hard)
-              </button>
-              <button
-                className={gameMode === 'companyHardMode' ? 'selected' : ''}
-                onClick={() => setGameMode('companyHardMode')}
-              >
-                Company (Hard)
-              </button>
-              <button
-                className={gameMode === 'bothHardMode' ? 'selected' : ''}
-                onClick={() => setGameMode('bothHardMode')}
-              >
-                Both (Hard)
-              </button>
-            </>
-          )}
-        </div>
-        <div className="hard-mode">
-          <input
-            type="checkbox"
-            id="hardMode"
-            checked={hardMode}
-            onChange={handleHardModeChange}
-          />
-          <label htmlFor="hardMode">Too Easy?</label>
-        </div>
-        <br />
-        <button className="start-button" onClick={startGame}>Start</button>
-      </div>
-    );
+ const renderGameModeSelect = () => {
+  const handleHardModeChange = (e) => {
+    setHardMode(e.target.checked);
+    if (gameMode.includes('HardMode')) {
+      myAlert('If not properly loading... Please reload the page to select a Game Mode.');
+    }
   };
+
+  return (
+    <div className="container">
+      <h1>Guess the Ticker!</h1>
+      <h3>We'll give you the name and/or the company of the coin. Can you guess its Ticker symbol?</h3>
+      <h4>Select a GameMode Below!</h4>
+      <div className="mode-buttons">
+        <button
+          className={gameMode === 'name' ? 'selected' : ''}
+          onClick={() => setGameMode('name')}
+        >
+          Name
+        </button>
+        <button
+          className={gameMode === 'company' ? 'selected' : ''}
+          onClick={() => setGameMode('company')}
+        >
+          Company
+        </button>
+        <button
+          className={gameMode === 'both' ? 'selected' : ''}
+          onClick={() => setGameMode('both')}
+        >
+          Both
+        </button>
+        {hardMode && (
+          <>
+            <button
+              className={gameMode === 'nameHardMode' ? 'selected' : ''}
+              onClick={() => setGameMode('nameHardMode')}
+            >
+              Name (Hard)
+            </button>
+            <button
+              className={gameMode === 'companyHardMode' ? 'selected' : ''}
+              onClick={() => setGameMode('companyHardMode')}
+            >
+              Company (Hard)
+            </button>
+            <button
+              className={gameMode === 'bothHardMode' ? 'selected' : ''}
+              onClick={() => setGameMode('bothHardMode')}
+            >
+              Both (Hard)
+            </button>
+          </>
+        )}
+      </div>
+      <div className="hard-mode">
+        <input
+          type="checkbox"
+          id="hardMode"
+          checked={hardMode}
+          onChange={handleHardModeChange}
+        />
+        <label htmlFor="hardMode">Too Easy?</label>
+      </div>
+      <br />
+      <button className="start-button" onClick={startGame}>Start</button>
+    </div>
+  );
+};
+
 
     
     const renderGame = () => {
       if (!gameMode) {
-        return <h6>Please reload the page and select a game mode!</h6>;
+        return <h6>Please reload the page and select a GameMode!</h6>;
       }
     
       const dictionaryEntry = dictionaryToUse[ticker];
@@ -253,7 +257,7 @@ const Game = () => {
   
         {gameMode === 'name' ? (
   <>
-    <h6>Game Mode: Name</h6>
+    <h6>GameMode: Name</h6>
     <h2>{dictionaryEntry.name}</h2>
     <form onSubmit={handleNameAnswerSubmit}>
       <input type="text" placeholder="answer..." value={nameAnswer} onChange={handleNameAnswerChange} />
@@ -262,7 +266,7 @@ const Game = () => {
   </>
 ) : gameMode === 'company' ? (
   <>
-    <h6>Game Mode: Company</h6>
+    <h6>GameMode: Company</h6>
     <h2>{dictionaryEntry.company}</h2>
     <form onSubmit={handleCompanyAnswerSubmit}>
       <input type="text" placeholder="answer..." value={companyAnswer} onChange={handleCompanyAnswerChange} />
@@ -271,7 +275,7 @@ const Game = () => {
   </>
 ) : gameMode === 'both' ? (
   <>
-    <h6>Game Mode: Both</h6>
+    <h6>GameMode: Both</h6>
     {name.toLowerCase() === company.toLowerCase() ? (
       <div>
         <h2>Name&Company:</h2>
@@ -292,7 +296,7 @@ const Game = () => {
   </>
 ) : hardMode && gameMode === 'nameHardMode' ? (
   <>
-    <h6>Game Mode: Name (Hard)</h6>
+    <h6>GameMode: Name (Hard)</h6>
     <h2>{dictionary2[ticker].name}</h2>
     <form onSubmit={handleNameAnswerSubmit}>
       <input type="text" placeholder="answer..." value={nameAnswer} onChange={handleNameAnswerChange} />
@@ -301,7 +305,7 @@ const Game = () => {
   </>
 ) : hardMode && gameMode === 'companyHardMode' ? (
   <>
-    <h6>Game Mode: Company (Hard)</h6>
+    <h6>GameMode: Company (Hard)</h6>
     <h2>{dictionary2[ticker].company}</h2>
     <form onSubmit={handleCompanyAnswerSubmit}>
       <input type="text" placeholder="answer..." value={companyAnswer} onChange={handleCompanyAnswerChange} />
@@ -310,7 +314,7 @@ const Game = () => {
   </>
 ) : hardMode && gameMode === 'bothHardMode' ? (
   <>
-    <h6>Game Mode: Both (Hard)</h6>
+    <h6>GameMode: Both (Hard)</h6>
     {dictionary2[ticker].name.toLowerCase() === dictionary2[ticker].company.toLowerCase() ? (
       <div>
         <h2>Name&Company:</h2>
@@ -349,13 +353,12 @@ const Game = () => {
   
   
 
-return (
-  <div>
-    {gameStarted ? renderGame() : renderGameModeSelect()}
-
-    <HighScores />
-  </div>
-);
+  return (
+    <div className={gameStarted ? "game-going" : ""}>
+      {gameStarted ? renderGame() : renderGameModeSelect()}
+      <HighScores />
+    </div>
+  );
 };
 
 export default Game;
