@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import dictionary from './dictionary';
 import dictionary2 from './dictionary2';
+import Swal from 'sweetalert2';
+
 
 import './Game.css';
 
@@ -125,35 +127,100 @@ const Game = () => {
 
   useEffect(() => {
     localStorage.setItem('highScores', JSON.stringify(highScores));
-  }, [highScores]);
+  }, [highScores, gameMode]);
+  
 
   const updateHighScore = useCallback(() => {
     if (score > highScores[gameMode].score) {
-      const initials = window.prompt('Congratulations! You got a new high score! Enter your Name:');
-      setHighScores((prevHighScores) => ({
-        ...prevHighScores,
-        [gameMode]: { initials, score },
-      }));
+      Swal.fire({
+        title: 'Congratulations!',
+        html: `<h3>You got a new high score!</h3><h2>${score} points!</h2>`,
+        input: 'text',
+        icon: 'success',
+        inputPlaceholder: 'Enter your name or initials',
+        confirmButtonText: 'Submit',
+        confirmButtonColor: 'rgb(173, 123, 233)',
+        inputAttributes: {
+          autocapitalize: 'off',
+          autocorrect: 'off',
+          autocomplete: 'off',
+        },
+        showCancelButton: false,
+        inputValidator: (value) => {
+          if (!value) {
+            return 'Please enter your name or initials in the box';
+          }
+        },
+        background:'rgba(0, 0, 0, 0.8)',
+        backdrop: `
+          rgba(0,0,123,0.4)
+        `,
+        customClass: {
+          title: 'swal-title',
+          confirmButton: 'swal-button',
+          input: 'swal-input',
+          validationMessage: 'swal-validation-message'
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const initials = result.value;
+          setHighScores((prevHighScores) => ({
+            ...prevHighScores,
+            [gameMode]: { initials, score },
+          }));
+        }
+      });
+    } else {
+      // Display the score using Swal.fire()
+      Swal.fire({
+        title: 'Good Try!',
+        html: `<h3>Your final score is:</h3><h2>${score} points...</h2>`,
+        icon: 'info',
+        confirmButtonText: 'OK',
+        confirmButtonColor: 'rgb(62, 84, 172)',
+        allowOutsideClick: false,
+        allowEscapeKey: true,
+        allowEnterKey: false,
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+          return new Promise((resolve) => {
+            setTimeout(() => {
+              resolve();
+            }, 250); // Add a short delay before closing the alert to give the user a chance to read the message
+          });
+        },
+        background:'rgba(0, 0, 0, 0.8)',
+        backdrop: `
+          rgba(0,0,123,0.4)
+        `,
+        customClass: {
+          title: 'swal-title',
+          confirmButton: 'swal-button',
+        }
+      });
     }
   }, [score, gameMode, highScores]);
+  
 
+  
+  
+  
   useEffect(() => {
     const endGame = () => {
       setGameStarted(false);
-      myAlert(`Congratulations, your score was: ${score} points!`);
+      updateHighScore();
       setScore(0);
       setTimeLeft(60);
       setTicker('');
       setNameAnswer('');
       setCompanyAnswer('');
-      updateHighScore();
     };
   
     if (timeLeft === 0 && ticker !== '') {
       endGame();
     }
-  }, [timeLeft, score, myAlert, setGameStarted, setTimeLeft, setTicker, setNameAnswer, setCompanyAnswer, ticker, gameMode, updateHighScore]);
-
+  }, [timeLeft, score, setGameStarted, setTimeLeft, setTicker, setNameAnswer, setCompanyAnswer, ticker, gameMode, updateHighScore]);
+  
   const HighScores = () => {
     const highScoresList = [
       { name: highScores.name, mode: 'Name' },
