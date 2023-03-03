@@ -155,18 +155,35 @@ const Game = () => {
   }, [timeLeft, score, myAlert, setGameStarted, setTimeLeft, setTicker, setNameAnswer, setCompanyAnswer, ticker, gameMode, updateHighScore]);
 
   const HighScores = () => {
+    const highScoresList = [
+      { name: highScores.name, mode: 'Name' },
+      { name: highScores.nameHardMode, mode: 'Name (Hard)' },
+      { name: highScores.company, mode: 'Company' },
+      { name: highScores.companyHardMode, mode: 'Company (Hard)' },
+      { name: highScores.both, mode: 'Both' },
+      { name: highScores.bothHardMode, mode: 'Both (Hard)' },
+    ];
+  
+    // Sort high scores in descending order
+    highScoresList.sort((a, b) => b.name?.score - a.name?.score);
+  
     return (
       <div className="high-scores">
         <h5>High Scores:</h5>
-        {highScores.name && highScores.name.score > 0 && <p>Name — {`${highScores.name.initials} — Score: ${highScores.name.score} `}</p>}
-        {highScores.nameHardMode && highScores.nameHardMode.score > 0 && <p>Name (Hard) — {`${highScores.nameHardMode.initials} — Score: ${highScores.nameHardMode.score}`}</p>}
-        {highScores.company && highScores.company.score > 0 && <p>Company — {`${highScores.company.initials} — Score: ${highScores.company.score}`}</p>}
-        {highScores.companyHardMode && highScores.companyHardMode.score > 0 && <p>Company (Hard) — {`${highScores.companyHardMode.initials} — Score: ${highScores.companyHardMode.score} Points!`}</p>}
-        {highScores.both && highScores.both.score > 0 && <p>Both — {`${highScores.both.initials} — Score: ${highScores.both.score}`}</p>}
-        {highScores.bothHardMode && highScores.bothHardMode.score > 0 && <p>Both (Hard) — {`${highScores.bothHardMode.initials} — Score: ${highScores.bothHardMode.score}`}</p>}
+        {highScoresList.map((score) => {
+          if (score.name?.score > 0) {
+            return (
+              <p key={score.mode}>
+                {score.mode} — {`${score.name?.initials} — Score: ${score.name?.score}`}
+              </p>
+            );
+          }
+          return null;
+        })}
       </div>
     );
   };
+  
   
   
 
