@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/Guess-the-Ticker/static/css/main.d77a6ade.css",
-    "main.js": "/Guess-the-Ticker/static/js/main.850965bc.js",
+    "main.js": "/Guess-the-Ticker/static/js/main.b9cf013e.js",
     "static/js/787.76bc9a8f.chunk.js": "/Guess-the-Ticker/static/js/787.76bc9a8f.chunk.js",
     "index.html": "/Guess-the-Ticker/index.html",
     "main.d77a6ade.css.map": "/Guess-the-Ticker/static/css/main.d77a6ade.css.map",
-    "main.850965bc.js.map": "/Guess-the-Ticker/static/js/main.850965bc.js.map",
+    "main.b9cf013e.js.map": "/Guess-the-Ticker/static/js/main.b9cf013e.js.map",
     "787.76bc9a8f.chunk.js.map": "/Guess-the-Ticker/static/js/787.76bc9a8f.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.d77a6ade.css",
-    "static/js/main.850965bc.js"
+    "static/js/main.b9cf013e.js"
   ]
 }
