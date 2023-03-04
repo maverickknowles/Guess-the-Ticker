@@ -12,7 +12,7 @@ const Game = () => {
   const [nameAnswer, setNameAnswer] = useState('');
   const [companyAnswer, setCompanyAnswer] = useState('');
   const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(15);
+  const [timeLeft, setTimeLeft] = useState(60);
   const [gameStarted, setGameStarted] = useState(false);
   const [highScores, setHighScores] = useState({
     name: { initials: '', score: 0 },
@@ -201,7 +201,7 @@ const Game = () => {
       setGameStarted(false);
       updateHighScore();
       setScore(0);
-      setTimeLeft(15);
+      setTimeLeft(60);
       setTicker('');
       setNameAnswer('');
       setCompanyAnswer('');
