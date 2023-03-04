@@ -12,7 +12,7 @@ const Game = () => {
   const [nameAnswer, setNameAnswer] = useState('');
   const [companyAnswer, setCompanyAnswer] = useState('');
   const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(60);
+  const [timeLeft, setTimeLeft] = useState(15);
   const [gameStarted, setGameStarted] = useState(false);
   const [highScores, setHighScores] = useState({
     name: { initials: '', score: 0 },
@@ -133,7 +133,7 @@ const Game = () => {
   const updateHighScore = useCallback(() => {
     if (score > highScores[gameMode].score) {
       Swal.fire({
-        title: 'Congratulations!',
+        title: '<h1>Congratulations!<h1>',
         html: `<h3>You got a new high score!</h3><h2>${score} points!</h2>`,
         input: 'text',
         icon: 'success',
@@ -148,19 +148,14 @@ const Game = () => {
         showCancelButton: false,
         inputValidator: (value) => {
           if (!value) {
-            return 'Please enter your name or initials in the box';
+            return '<span style=" color: red;">Please enter your name or initials in the box</span>';
           }
         },
         background:'rgba(0, 0, 0, 0.8)',
         backdrop: `
           rgba(0,0,123,0.4)
-        `,
-        customClass: {
-          title: 'swal-title',
-          confirmButton: 'swal-button',
-          input: 'swal-input',
-          validationMessage: 'swal-validation-message'
-        }
+        `
+       
       }).then((result) => {
         if (result.isConfirmed) {
           const initials = result.value;
@@ -173,7 +168,7 @@ const Game = () => {
     } else {
       // Display the score using Swal.fire()
       Swal.fire({
-        title: 'Good Try!',
+        title: '<h1>Good Try!<h1>',
         html: `<h3>Your final score is:</h3><h2>${score} points...</h2>`,
         icon: 'info',
         confirmButtonText: 'OK',
@@ -192,11 +187,7 @@ const Game = () => {
         background:'rgba(0, 0, 0, 0.8)',
         backdrop: `
           rgba(0,0,123,0.4)
-        `,
-        customClass: {
-          title: 'swal-title',
-          confirmButton: 'swal-button',
-        }
+        `
       });
     }
   }, [score, gameMode, highScores]);
@@ -210,7 +201,7 @@ const Game = () => {
       setGameStarted(false);
       updateHighScore();
       setScore(0);
-      setTimeLeft(60);
+      setTimeLeft(15);
       setTicker('');
       setNameAnswer('');
       setCompanyAnswer('');

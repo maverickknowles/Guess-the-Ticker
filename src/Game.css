@@ -104,12 +104,14 @@ form {
 }
 
 input[type="text"] {
-  font-size: 24px;
-  color: #3A1078;
+  font-size: 28px;
+  color: #9363dc;
   border: none;
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 16px;
+  text-shadow: .5px .5px #000;
+  font-weight: 600;
   width: 100%;
   max-width: 400px;
   text-align: center;
@@ -245,8 +247,6 @@ p {
 
 
 
-
-
 h5 {
   font-size: 30px;
   font-weight: bold;
@@ -334,28 +334,4 @@ h6 {
   left: 6px;
   top: 6px;
   background-color: rgba(0, 0, 0, 0.8);
-}
-
-
-  .swal-title {
-  color: white;
-  font-size: 40px;
-}
-
-
-.swal-button {
-  color: white;
-  background-color: rgb(173, 123, 233);
-  border: 1px solid white;
-}
-
-
-.swal-input {
-  font-weight: 600;
-  background-color: rgba(184, 184, 184, 0.6);
-}
-
-.swal-validation-message {
-  color: rgb(255, 0, 0);
-  background:rgba(0, 0, 0, 0.7);
 }
